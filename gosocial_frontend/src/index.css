@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+        font-family: 'Lato', sans-serif;
+}
+
+
+/* .hide-scrollbar: This is a CSS class selector. It targets an HTML element that has the hide-scrollbar class applied to it.
+::-webkit-scrollbar: This is a pseudo-element that targets the default scrollbar in the WebKit rendering engine, which is used by browsers like Google Chrome and Safar */
+.hide-scrollbar::-webkit-scrollbar {
+        display: none;
+}
