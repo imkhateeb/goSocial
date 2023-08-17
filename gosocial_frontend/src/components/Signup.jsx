@@ -9,8 +9,8 @@ import {
    Select,
 } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { client } from '../container/client';
-
+import client from '../container/client';
+const { v4: uuidv4 } = require('uuid');
 
 const { Option } = Select;
 
@@ -49,22 +49,19 @@ const tailFormItemLayout = {
 export default function Signup() {
    const navigate = useNavigate();
    const [form] = Form.useForm();
-   const onFinish = (values) => {
-      const uniqueString = JSON.stringify(values);
-      // localStorage.setItem('user', uniqueString);
-      // console.log(uniqueString);
-      // console.log('Received values of form: ', values);
-
+   const onFinish = async (values) => {
+      const uuid = uuidv4();
       const doc = {
-         _id: uniqueString,
+         _id: uuid,
          _type: 'user',
          userName: values.username,
          email: values.email,
          password: values.password,
          gender: values.gender,
       }
-
-      client.createIfNotExists(doc).then(()=>navigate('/'));
+      client.createIfNotExists(doc).then(() => {
+         navigate('/', { replace: true })
+      });
    };
 
 
@@ -127,9 +124,9 @@ export default function Signup() {
                               required: true,
                               message: 'Please input your password!',
                            },
-                           ({getFieldValue})=>({
-                              validator(_, value){
-                                 if ( !value || value.length >= 6 ){
+                           ({ getFieldValue }) => ({
+                              validator(_, value) {
+                                 if (!value || value.length >= 6) {
                                     return Promise.resolve();
                                  } return Promise.reject(new Error('At least 6 character password!'));
                               }
