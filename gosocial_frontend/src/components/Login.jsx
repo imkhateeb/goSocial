@@ -107,7 +107,7 @@ export default function Login() {
                       </Button>
                     </div>
                     <div>
-                      Or <Link href="" className='ml-2'>register now!</Link>
+                      Or <Link to={'/signup'} className='ml-2'>register now!</Link>
                     </div>
                   </div>
                 </Form.Item>

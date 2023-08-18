@@ -1,15 +1,9 @@
 import React from 'react';
 import logoImage from '../assets/logo.png';
 import introVideo from '../assets/goSocialIntroVideo.mp4';
-import {
-   Button,
-   Checkbox,
-   Form,
-   Input,
-   Select,
-} from 'antd';
+import { Button, Checkbox, Form, Input, Select, } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import client from '../container/client';
+// import client from '../container/client';
 const { v4: uuidv4 } = require('uuid');
 
 const { Option } = Select;
@@ -45,6 +39,34 @@ const tailFormItemLayout = {
    },
 };
 
+async function postData(documment){
+   const projectId = process.env.REACT_APP_SANITY_PROJECT_ID;
+   const URI = `https://${projectId}.api.sanity.io/v2021-06-07/data/mutate/production`;
+   const Token = `Bearer ${process.env.REACT_APP_SANITY_TOKEN}`
+
+   try {
+      const response = await fetch(URI, {
+         method: "POST",
+         headers: {
+            "Content-Type" : "application/json",
+            "Authorization" : Token,
+         },
+         body: JSON.stringify({
+            mutations: [
+               {
+                  create: documment
+               }
+            ]
+         })
+      });
+
+      const json = await response.json();
+      console.log("Document created: ", json);
+   } catch (error) {
+      console.log("Error while sending data to sanity---", error);
+   }
+};
+
 
 export default function Signup() {
    const navigate = useNavigate();
@@ -54,14 +76,15 @@ export default function Signup() {
       const doc = {
          _id: uuid,
          _type: 'user',
+         myId: uuid,
          userName: values.username,
          email: values.email,
          password: values.password,
          gender: values.gender,
       }
-      client.createIfNotExists(doc).then(() => {
-         navigate('/', { replace: true })
-      });
+      localStorage.setItem('userID', uuid);
+      await postData(doc);
+      navigate('/');
    };
 
 
