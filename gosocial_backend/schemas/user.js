@@ -33,5 +33,13 @@ export default {
          title: 'Agreement',
          type: 'boolean',
       },
+      {
+         name: 'image',
+         title: 'Image',
+         type: 'image',
+         options: {
+            hotspot: true,
+         }
+      }
    ]
 }

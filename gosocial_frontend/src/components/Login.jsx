@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import introVideo from '../assets/goSocialIntroVideo.mp4';
 import logoImage from '../assets/logo.png';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,8 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import '../css/login.css';
+import client from '../container/client';
+
 // This modules will be used at the time of oAuth
 // import { FcGoogle } from 'react-icons/fc';
 // import { GoogleLogin } from '@leecheuk/react-google-login';
@@ -13,16 +15,32 @@ import '../css/login.css';
 
 export default function Login() {
   const navigate = useNavigate();
+  const [isCorrectUserauth, setIsCorrectUserauth] = useState(true);
+  const [isCorrectPassword, setIsCorrectPassword] = useState(true);
 
-
-  // This is the part of oAuth
-  // function responseGoogle(response) {
-  //   console.log(response);
-  // }
-
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
-    navigate("/");
+  const onFinish = async (values) => {
+    // const {remember} = values;
+    const users = await client.fetch(`*[_type == "user"]`);
+    let flagA = 0;
+    let flagP = 0;
+    users?.forEach(user => {
+      if ( (user?.userName === values.userauth) || (user?.email === values.userauth)){
+        flagA = 1;
+        if ( user?.password === values.password){
+          flagP = 1;
+          localStorage.clear();
+          localStorage.setItem("userID", user?._id);
+          navigate("/");
+          window.location.reload();
+        }
+      }
+    });
+    !flagA && setIsCorrectUserauth(false);
+    !flagP && setIsCorrectPassword(false);
+    setTimeout(() => {
+      setIsCorrectPassword(true);
+      setIsCorrectUserauth(true);
+    }, 2000);
   };
 
 
@@ -43,12 +61,20 @@ export default function Login() {
         />
 
         {/* Login Signup div */}
-        <div className='absolute flex flex-col justify-center items-center top-0 right-0 left-0 bottom-0 bg-blackOverlay'>
+        <div className='absolute flex flex-col justify-center items-center top-0 right-0 left-0 bottom-0'>
           <div className='p-5'>
             <img src={logoImage} width='130px' alt='logo' />
           </div>
           <div className='shadow-2xl w-1/3'>
             <div className='bg-white p-10 rounded-lg w-100'>
+
+
+            {!isCorrectUserauth && <p className='flex items-center justify-center text-xl sm:text-sm text-red-500 animate-bounce'>Incorrect Email or Username</p>}
+
+            {!isCorrectPassword && isCorrectUserauth && <p className='flex items-center justify-center text-xl sm:text-sm text-red-500 animate-bounce'>Incorrect Password</p>}
+
+
+              {!localStorage.getItem('userID') ?
               <Form
                 name="normal_login"
                 className="login-form"
@@ -58,11 +84,11 @@ export default function Login() {
                 onFinish={onFinish}
               >
                 <Form.Item
-                  name="username"
+                  name="userauth"
                   rules={[
                     {
                       required: true,
-                      message: 'Please input your Username!',
+                      message: 'Please input your Username or email!',
                     },
                   ]}
                 >
@@ -112,20 +138,13 @@ export default function Login() {
                   </div>
                 </Form.Item>
               </Form>
+              :
+              <div
+                className='flex items-center justify-center text-xl sm:text-sm text-red-500 animate-bounce'
+              >You are already logged in</div>
+              }
             </div>
 
-
-            {/* 
-              // we will see it when complete the oAuth - Angela Yu
-              <GoogleLogin
-              clientId={process.env.REACT_APP_GOOGLE_API_TOKEN}
-              render={renderProps => (
-                <button type='button' className='bg-mainColor flex justify-center items-center p-3 rounded-lg cursor-pointer outline-none' onClick={renderProps.onClick} disabled={renderProps.disabled}><FcGoogle className='mr-4' /> Signin with google</button>
-              )}
-              onSuccess={responseGoogle}
-              onFailure={responseGoogle}
-              cookiePolicy='single_host_origin'
-            /> */}
           </div>
         </div>
       </div>
