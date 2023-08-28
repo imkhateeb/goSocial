@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoMdAdd, IoMdSearch } from 'react-icons/io';
-import logoImage from '../assets/logo.png'
-
+import ProfilePicture from './ProfilePicture';
 export default function Navbar({ searchTerm, setSearchTerm, user }) {
   const navigate = useNavigate();
 
@@ -22,11 +21,17 @@ export default function Navbar({ searchTerm, setSearchTerm, user }) {
       </div>
       <div className='flex gap-3'>
       <Link to={`user-profile/${user?._id}`} className='hidden md:block'>
-        <img src={logoImage} alt="userImage" className='w-14 h-12 rounded-lg'/>
+        <ProfilePicture 
+          width={14}
+          height={12}
+          isUploadActive={false}
+          userId={user?._id}
+          rounded='full'
+        />
       </Link>
 
 
-      <Link to={`/create-pin`} className='bg-black text-white rounded-lg w-12 h-12 md:w-14 md:wh-12 flex justify-center items-center'>
+      <Link to={`/create-pin`} className='bg-black text-white rounded-full w-12 h-12 md:w-14 md:wh-12 flex justify-center items-center'>
         <IoMdAdd />
       </Link>
 

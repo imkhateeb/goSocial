@@ -26,7 +26,7 @@ export default function Feed() {
     }
   }, [categoryId])
   
-  if (!pins.length){
+  if (!(pins?.length)){
     return (
       <div className='flex flex-col justify-center items-center'>
         <Roundspinner />

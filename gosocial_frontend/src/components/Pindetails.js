@@ -170,7 +170,7 @@ export default function Pindetails({ user }) {
           <Link to='/login'>Login to comment</Link> 
           : 
           <>
-            <div className='flex flex-wrap mt-2 gap-3 md:flex-col '>
+            <div className='flex flex-wrap mt-2 gap-3 max-md:flex-col '>
               <Link to={`/user-profile/${user?._id}`}
                 className='flex gap-2 items-center bg-white rounded-lg'
               >

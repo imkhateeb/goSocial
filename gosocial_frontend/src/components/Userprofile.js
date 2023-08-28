@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { AiOutlineLogout } from 'react-icons/ai';
 import { useParams, useNavigate } from 'react-router-dom';
 
-
 import { userCreatedPinsQuery, userQuery, userSavedPinsQuery } from '../utils/data';
 import client from '../container/client';
 import { urlFor } from '../container/client';
 import MasonryLayout from './MasonryLayout';
 import Spinner from './Spinner';
-import Roundspinner from './Roundspinner';
+import ProfilePicture from './ProfilePicture';
 
 const randomImage = 'https://source.unsplash.com/1600x900/?nature,photography,technology';
 
@@ -65,7 +64,14 @@ export default function Userprofile() {
         <div className='relative flex flex-col mb-7'>
           <div className='flex flex-col justify-center items-center'>
             <img src={randomImage} className='w-full h-370 2xl:h-510 shadow-lg object-cover' alt='random-img' />
-            <img className='rounded-full w-20 h-20 -mt-10 shadow-2xl object-cover' src={urlFor(user.image)?.url()} alt="user-img" />
+            <ProfilePicture 
+              height={20}
+              width={20}
+              isUploadActive={false}
+              classNames="shadow-2xl -mt-10 object-cover"
+              rounded="full"
+              userId={user?._id}
+            />
             <h1 className='font-bold text-3xl text-center mt-3'> {user.userName} </h1>
             <div className='absolute top-0 z-1 right-0 p-2'>
               <p>Logout function</p>
