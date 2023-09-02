@@ -65,10 +65,8 @@ export default function Login() {
           <div className='p-5'>
             <img src={logoImage} width='130px' alt='logo' />
           </div>
-          <div className='shadow-2xl w-1/3'>
-            <div className='bg-white p-10 rounded-lg w-100'>
-
-
+          <div className='shadow-2xl w-2/5 xl:w-1/3 max-md:w-3/5 max-sm:w-11/12'>
+            <div className='bg-white md:px-10 max-md:px-8 max-sm:px-5 py-10 rounded-lg w-100'>
             {!isCorrectUserauth && <p className='flex items-center justify-center text-xl sm:text-sm text-red-500 animate-bounce'>Incorrect Email or Username</p>}
 
             {!isCorrectPassword && isCorrectUserauth && <p className='flex items-center justify-center text-xl sm:text-sm text-red-500 animate-bounce'>Incorrect Password</p>}
@@ -113,12 +111,12 @@ export default function Login() {
                   <div className='flex justify-between'>
                     <div>
                       <Form.Item name="remember" valuePropName="checked" noStyle>
-                        <Checkbox>Remember me</Checkbox>
+                        <Checkbox className='max-sm:text-xs'>Remember me</Checkbox>
                       </Form.Item>
                     </div>
 
                     <div>
-                      <Link className="login-form-forgot" href="">
+                      <Link className="login-form-forgot max-sm:text-xs" href="">
                         Forgot password
                       </Link>
                     </div>
@@ -139,9 +137,13 @@ export default function Login() {
                 </Form.Item>
               </Form>
               :
+              <>
+
               <div
                 className='flex items-center justify-center text-xl sm:text-sm text-red-500 animate-bounce'
               >You are already logged in</div>
+              <button onClick={()=>localStorage.removeItem("userID")}>Logout</button>
+              </>
               }
             </div>
 

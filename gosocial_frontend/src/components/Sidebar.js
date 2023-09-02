@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom';
 import { RiHomeFill } from 'react-icons/ri';
 import { PoweroffOutlined } from '@ant-design/icons';
-import logoBrand from '../assets/logo.png'
+import { useNavigate } from 'react-router-dom';
 import { categories } from '../utils/data';
 import ProfilePicture from './ProfilePicture';
 
 
 export default function Sidebar({ user, closeToggle }) {
-
+  const navigate = useNavigate();
   const [confirmLogout, setConfirmLogout] = useState(false);
 
   function handleCloseSidebar() {
@@ -22,16 +22,13 @@ export default function Sidebar({ user, closeToggle }) {
     localStorage.removeItem('userID');
     localStorage.clear();
     setConfirmLogout(false);
+    navigate("/");
     window.location.reload();
   }
 
   return (
     <div className='flex flex-col justify-between bg-white h-full overflow-y-scroll min-w-210 hide-scrollbar'>
       <div className='w-200 mt-5 flex ml-5'>
-      <Link to={'/'}>
-        <img src={logoBrand} alt="logo-branding" className='w-20 h-20 rounded-sm' />
-      </Link>
-
       </div>
       <div className='flex flex-col'>
         <div className='flex px-5 gap-2 mt-3 mb-2 py-1 w-190 items-center cursor-pointer'>
@@ -63,7 +60,7 @@ export default function Sidebar({ user, closeToggle }) {
           }
         </div>
       </div>
-      {user ? (
+      {user && (
         <>
           <Link
             to={`user-profile/${user._id}`}
@@ -93,17 +90,8 @@ export default function Sidebar({ user, closeToggle }) {
           > Logout
             <PoweroffOutlined />
           </div>
-        </>)
-        :
-        (
-          <>
-            <div className='flex mb-3 items-center gap-2 p-2 items-center bg-white rounded-lg shadow-lg mx-3 justify-between animate-slide-in my-1'>
-              <Link to={'login'} className='cursor-pointer text-gray-500' >Login</Link>
-              <Link to={'signup'} className='cursor-pointer text-gray-500'>Signup</Link>
-            </div>
-          </>
-        )
-      }
+        </>
+      )}
     </div>
   )
 }

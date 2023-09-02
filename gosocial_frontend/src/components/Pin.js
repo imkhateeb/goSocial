@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { MdDownloadForOffline } from 'react-icons/md';
@@ -13,7 +13,7 @@ import logoImage from '../assets/logo.png';
 const user = await fetchUser();
 
 
-export default function Pin({ pin: { postedBy, image, _id, destination, save } }) {
+export default function Pin({ pin: { postedBy, image, _id, destination, save, about } }) {
    // console.log("Posted by: ", postedBy._id);
 
 
@@ -21,9 +21,20 @@ export default function Pin({ pin: { postedBy, image, _id, destination, save } }
    const [postHovered, setPostHovered] = useState(false);
    const [savingPost, setSavingPost] = useState(false);
    const [deletingPost, setDeletingPost] = useState(false);
+   const [user, setUser] = useState(null);
+
+   useEffect(() => {
+      let data = null;
+      const fetchUserData = async () => {
+         data = await fetchUser();
+         setUser(data);
+      }
+      fetchUserData();
+   }, [])
+
 
    // we are looping through save array to see if the post is already 
-   const alreadySaved = !!((save?.filter((item) => item.postedBy._id === user?._id))?.length);
+   const alreadySaved = !!((save?.filter((item) => item.postedBy?._id === user?._id))?.length);
 
    async function savePin(pinId) {
       if (!alreadySaved) {
@@ -49,6 +60,7 @@ export default function Pin({ pin: { postedBy, image, _id, destination, save } }
       }
    }
 
+   // Save is increasing everytime fix that problem
 
    // getting the pin's owner
    let postedByURL = null;
@@ -64,17 +76,19 @@ export default function Pin({ pin: { postedBy, image, _id, destination, save } }
       setDeletingPost(false);
    }
    return (
-      <div className='m-2'>
+      <div className='m-3 bg-white shadow-xl hover:shadow-md transition-all duration-300 ease-in-out rounded-lg'>
          <div
             onMouseEnter={() => setPostHovered(true)}
             onMouseLeave={() => setPostHovered(false)}
-            onClick={() => navigate(`/pin-details/${_id}`)}
+            onClick={() => {
+               !user ? navigate('/login') :
+                  navigate(`/pin-details/${_id}`)
+            }}
             className='relative cursor-zoom-in w-auto hover:shadow-lg rounded-lg overflow-hidden transition-all duration-500 ease-in-out'
          >
             <img
                className='rounded-lg w-full'
                alt='userPost'
-
                // below image is coming from Feed component by component drilling Feed->Masonarylayout->Pin
                src={urlFor(image).width(250).url()}
             />
@@ -107,8 +121,11 @@ export default function Pin({ pin: { postedBy, image, _id, destination, save } }
                            <button
                               type='button' className='bg-red-500 opacity-70 hover:opacity-100 font-bold px-5 text-white py-1 text-base rounded-3xl hover:shadow-md outlined-none'
                               onClick={(e) => {
-                                 e.stopPropagation()
-                                 savePin(_id)
+                                 { !user && navigate("/login") }
+                                 {user &&
+                                    e.stopPropagation()
+                                    savePin(_id)
+                                 }
                               }}
                            >{savingPost ? 'Saving...' : 'Save'}</button>}
                   </div>
@@ -141,27 +158,27 @@ export default function Pin({ pin: { postedBy, image, _id, destination, save } }
                </div>
             }
          </div>
-         <Link to={`/user-profile/${user?._id}`}
-            className='flex gap-2 mt-2 items-center '
-         >
-            {!postedByURL ?
-               <img
-                  className='w-8 h-8 rounded-full object-cover'
-                  src={logoImage} // we have to change this by user image
-                  alt='user-profile'
-               />
-               :
-               <img
-                  className='w-8 h-8 rounded-full object-cover'
-                  src={postedByURL} // we have to change this by user image
-                  alt='user-profile'
-               />
-            }
-
-            <p className='font-semibold capitalize'>
+         <div className='flex flex-col gap-1 py-3 px-4 '>
+            <Link to={`/user-profile/${user?._id}`}>
+               {!postedByURL ?
+                  <img
+                     className='w-8 h-8 rounded-full object-cover'
+                     src={logoImage} // we have to change this by user image
+                     alt='user-profile'
+                  />
+                  :
+                  <img
+                     className='w-8 h-8 rounded-full object-cover'
+                     src={postedByURL} // we have to change this by user image
+                     alt='user-profile'
+                  />
+               }
+            </Link>
+            <Link to={`/user-profile/${user?._id}`} className='text-black font-bold'>
                {postedBy.userName}
-            </p>
-         </Link>
+            </Link>
+            <p className='text-gray-400 text-xs'>{about}</p>
+         </div>
       </div>
    )
 }

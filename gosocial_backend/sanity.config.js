@@ -1,13 +1,13 @@
-import {defineConfig} from 'sanity';
-import {deskTool} from 'sanity/desk';
-import {visionTool} from '@sanity/vision';
-import {schemaTypes} from './schemas';
+import {defineConfig} from 'sanity'
+import {deskTool} from 'sanity/desk'
+import {visionTool} from '@sanity/vision'
+import {schemaTypes} from './schemas'
 
 export default defineConfig({
   name: 'default',
-  title: 'gosocial_ask',
+  title: 'gosocial',
 
-  projectId: '58hi3xmr',
+  projectId: 't32felnw',
   dataset: 'production',
 
   plugins: [deskTool(), visionTool()],

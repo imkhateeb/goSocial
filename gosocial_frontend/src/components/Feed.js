@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import client from '../container/client';
-import {MasonryLayout, Spinner} from '../components';
+import { MasonryLayout, Spinner } from '../components';
 import { feedQuery, searchQuery } from '../utils/data';
 import Roundspinner from './Roundspinner';
+import { PiPushPinSimpleSlashFill } from 'react-icons/pi';
 
 export default function Feed() {
   const [loading, setLoading] = useState(false);
@@ -12,36 +13,37 @@ export default function Feed() {
 
   useEffect(() => {
     setLoading(true);
-    if ( categoryId) {
+    if (categoryId) {
       const query = searchQuery(categoryId);
-      client.fetch(query).then((data)=>{
+      client.fetch(query).then((data) => {
         setPins(data);
         setLoading(false);
       })
     } else {
-      client.fetch(feedQuery).then((data)=>{
+      client.fetch(feedQuery).then((data) => {
         setPins(data);
         setLoading(false);
       })
     }
-  }, [categoryId])
-  
-  if (!(pins?.length)){
+  }, [categoryId]);
+
+
+  if (loading) {
+    return <Spinner message="We are adding new ideas to your feed!" />
+  } else if (!(pins?.length)) {
     return (
-      <div className='flex flex-col justify-center items-center'>
-        <Roundspinner />
-        <h2>No Pins available!</h2>
+      <div className='flex flex-col justify-center items-center mt-20'>
+        <PiPushPinSimpleSlashFill fontSize={50} />
+        <h2 className='text-xl my-5'>No Pins available!</h2>
       </div>
     )
-  }
-
-
-  if(loading) return <Spinner message="We are adding new ideas to your feed!" />
-  return (
-    <div>
+  } else {
+    return (
+      <div>
         {
           pins && <MasonryLayout pins={pins} />
         }
-    </div>
-  )
+      </div>
+    )
+  }
 }
