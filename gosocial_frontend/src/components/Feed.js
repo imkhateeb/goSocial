@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import client from '../container/client';
 import { MasonryLayout, Spinner } from '../components';
 import { feedQuery, searchQuery } from '../utils/data';
-import Roundspinner from './Roundspinner';
 import { PiPushPinSimpleSlashFill } from 'react-icons/pi';
 
 export default function Feed() {
@@ -33,8 +32,8 @@ export default function Feed() {
   } else if (!(pins?.length)) {
     return (
       <div className='flex flex-col justify-center items-center mt-20'>
-        <PiPushPinSimpleSlashFill fontSize={50} />
-        <h2 className='text-xl my-5'>No Pins available!</h2>
+        <PiPushPinSimpleSlashFill color='white' fontSize={50} />
+        <h2 className='text-2xl font-semibold text-white my-5'>No Pins available!</h2>
       </div>
     )
   } else {

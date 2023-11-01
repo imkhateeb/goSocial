@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AiOutlineLogout } from 'react-icons/ai';
 import { useParams, useNavigate } from 'react-router-dom';
+import { PoweroffOutlined } from '@ant-design/icons';
 
 import { userCreatedPinsQuery, userQuery, userSavedPinsQuery } from '../utils/data';
 import client from '../container/client';
@@ -9,19 +10,30 @@ import MasonryLayout from './MasonryLayout';
 import Spinner from './Spinner';
 import ProfilePicture from './ProfilePicture';
 
-const randomImage = 'https://source.unsplash.com/1600x900/?nature,photography,technology';
+const randomImage = 'https://source.unsplash.com/1600x900/?technology';
 
-const activeBtnStyles = 'bg-red-500 text-white font-bold p-2 rounded-full w-20 outline-none transition-all duration-500 ease-in';
+const activeBtnStyles = 'bg-gradient-to-t from-blue-900 to-black text-white font-bold py-2 px-4 rounded-full outline-none transition-all duration-500 ease-in';
 
-const notActiveBtnStyles = 'bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none transition-all duration-300 ease-in';
+const notActiveBtnStyles = 'bg-primary mr-4 text-gray-300 font-bold py-2 px-4 rounded-full outline-none transition-all duration-300 ease-in';
 
 export default function Userprofile() {
   const [user, setUser] = useState(null);
   const [pins, setPins] = useState(null);
-  const [text, setText] = useState('created');
+  const [text, setText] = useState('Created');
   const [activeBtn, setActiveBtn] = useState('created');
   const navigate = useNavigate();
   const { userId } = useParams();
+
+  const [confirmLogout, setConfirmLogout] = useState(false);
+
+  function handleLogout() {
+    localStorage.removeItem('userID');
+    localStorage.clear();
+    setConfirmLogout(false);
+    navigate("/");
+    window.location.reload();
+  }
+
 
   useEffect(() => {
     const query = userQuery(userId);
@@ -35,13 +47,11 @@ export default function Userprofile() {
   useEffect(() => {
     if (text === 'Created') {
       const createdPinsQuery = userCreatedPinsQuery(userId);
-
       client.fetch(createdPinsQuery)
         .then((data) => setPins(data))
         .catch(console.error)
     } else {
       const savedPinsQuery = userSavedPinsQuery(userId);
-
       client.fetch(savedPinsQuery)
         .then((data) => setPins(data))
         .catch(console.error)
@@ -63,8 +73,8 @@ export default function Userprofile() {
       <div className='flex flex-col pb-5'>
         <div className='relative flex flex-col mb-7'>
           <div className='flex flex-col justify-center items-center'>
-            <img src={randomImage} className='w-full h-370 2xl:h-510 shadow-lg object-cover' alt='random-img' />
-            <ProfilePicture 
+            <img src={randomImage} className='w-full h-[30vh] 2xl:h-[40vh] shadow-lg object-cover' alt='random-img' />
+            <ProfilePicture
               height={20}
               width={20}
               isUploadActive={false}
@@ -72,9 +82,22 @@ export default function Userprofile() {
               rounded="full"
               userId={user?._id}
             />
-            <h1 className='font-bold text-3xl text-center mt-3'> {user.userName} </h1>
+            <h1 className='font-bold text-3xl text-center mt-3 text-white'> {user.userName} </h1>
             <div className='absolute top-0 z-1 right-0 p-2'>
-              <p>Logout function</p>
+              {userId === localStorage.getItem("userID") && (
+                confirmLogout ?
+                  (
+                    <div className='flex items-center rounded-full shadow-lg animate-fade-in duration-300 ease-linear w-full'>
+                      <button className='py-2 px-4 rounded-l-full outline-none bg-red-600 shadow-lg hover:shadow-sm hover:bg-red-500 cursor-pointer transition-all duration-200 text-white' onClick={handleLogout}>Confirm</button>
+                      <button className='py-2 px-5 rounded-r-full outline-none bg-blue-600 shadow-lg hover:shadow-sm hover:bg-blue-500 cursor-pointer transition-all duration-200 text-white' onClick={() => setConfirmLogout(false)}>Cancel</button>
+                    </div>
+                  ) : (
+                    <div className='p-4 rounded-full flex items-center justify-center outline-none bg-red-600 hover:bg-red-500 shadow-lg cursor-pointer transition-all duration-200 text-white w-full'
+                      onClick={() => setConfirmLogout(!confirmLogout)}
+                    ><AiOutlineLogout className='text-white text-xl' />
+                    </div>
+                  )
+              )}
             </div>
           </div>
           <div className='text-center mb-7 mt-4'>
@@ -99,7 +122,7 @@ export default function Userprofile() {
               Saved
             </button>
           </div>
-          
+
 
           {/* Fix this to show the personalize pins only */}
           {pins?.length > 0 ?
@@ -107,7 +130,7 @@ export default function Userprofile() {
               <MasonryLayout pins={pins} />
             </div>
             :
-            <div className='flex justify-center font-bold items-center w-full text-xl mt-2'>No pins found</div>
+            <div className='flex justify-center font-bold items-center w-full text-xl mt-2 text-white'>No pins found</div>
           }
         </div>
       </div>

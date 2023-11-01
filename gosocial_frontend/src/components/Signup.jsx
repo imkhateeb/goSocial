@@ -63,51 +63,54 @@ export default function Signup() {
 
 
   const onFinish = async (values) => {
-  const { usernameExists, emailExists } = await checkExistingUser(values);
+    const { usernameExists, emailExists } = await checkExistingUser(values);
 
-  if (usernameExists) {
-    setUsernameExist(true);
-  }
-
-  if (emailExists) {
-    setEmailExist(true);
-  }
-
-  if (!emailExists && !usernameExists) { // Only create user if both conditions are false
-    const { userName, email, password, gender, agreement } = values;
-    const uuid = uuidv4();
-    const doc = {
-      _id: uuid,
-      _type: 'user',
-      myId: uuid,
-      userName,
-      email,
-      password,
-      gender,
-      agreement,
+    if (usernameExists) {
+      setUsernameExist(true);
     }
 
-    client.createIfNotExists(doc).then(() => {
-      localStorage.setItem("userID", doc._id);
-      navigate('/');
-    }).catch((error) => {
-      console.log("Error creating user!", error);
-    });
-  } else {
-    setTimeout(() => {
-      setEmailExist(false);
-      setUsernameExist(false);
-    }, 3000);
-  }
-};
+    if (emailExists) {
+      setEmailExist(true);
+    }
+
+    if (!emailExists && !usernameExists) { // Only create user if both conditions are false
+      const { userName, email, password, gender, agreement } = values;
+      const uuid = uuidv4();
+      const doc = {
+        _id: uuid,
+        _type: 'user',
+        myId: uuid,
+        userName,
+        email,
+        password,
+        gender,
+        agreement,
+      }
+
+      client.createIfNotExists(doc).then(() => {
+        localStorage.setItem("userID", doc._id);
+        navigate('/');
+      }).catch((error) => {
+        console.log("Error creating user!", error);
+      });
+    } else {
+      setTimeout(() => {
+        setEmailExist(false);
+        setUsernameExist(false);
+      }, 3000);
+    }
+  };
 
 
 
   return (
-    <div className='flex justify-center items-center min-h-screen flex-col bg-mainColor'>
+    <div className='flex justify-center items-center min-h-screen flex-col bg-gradient-to-t from-black to-blue-900'>
       <div className='p-5'>
-        <img src={logoImage} width='100px' alt='logo' />
+        <Link to={"/"}>
+          <img src={logoImage} width='100px' alt='logo' className='rounded-full border-[0.5px] border-red-400' />
+        </Link>
       </div>
+      <h1 className='text-3xl font-bold text-white'>Register here.</h1>
       <div className='bg-white md:px-10 max-md:px-8 max-sm:px-6 pt-10 pb-2 my-3 rounded-lg w-3/5 xl:w-2/5 max-md:w-4/5 max-sm:w-11/12'>
         {!localStorage.getItem("userID") ?
           <Form

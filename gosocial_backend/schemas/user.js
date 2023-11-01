@@ -40,6 +40,12 @@ export default {
          options: {
             hotspot: true,
          }
+      },
+      {
+         name: 'tags',
+         title: 'Tags',
+         type: 'array',
+         of: [{type: 'string'}]
       }
    ]
 }

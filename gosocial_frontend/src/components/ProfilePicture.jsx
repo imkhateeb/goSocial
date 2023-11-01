@@ -4,8 +4,6 @@ import client from '../container/client';
 import { urlFor } from '../container/client';
 import Roundspinner from './Roundspinner';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { Link } from 'react-router-dom';
-
 
 export default function ProfilePicture({ userId, height, width, rounded, isUploadActive, classNames }) {
   const [dploading, setDploading] = useState(true);
@@ -22,9 +20,7 @@ export default function ProfilePicture({ userId, height, width, rounded, isUploa
         setUser(data[0]);
       })
       .catch((console.error))
-  }, [userId])
-
-  // console.log(user && user);
+  }, [userId]);
 
   // logic to check if DP was present or not
   let dpUrl = null;
@@ -101,20 +97,20 @@ export default function ProfilePicture({ userId, height, width, rounded, isUploa
   }
 
   const style = {
-    dpStyle: `h-${!height ? 20 : height} w-${!width ? 20 : width} rounded-${!rounded ? 'full' : rounded} ${classNames && classNames}`
+    dpStyle: `h-${!height ? 20 : height} w-${!width ? 20 : width} rounded-${!rounded ? 'full' : rounded} ${classNames && classNames} cursor-pointer`
   }
 
 
   return (
     <>
       {!user ?
-        <div>
+        <div className='flex justify-center'>
           {dploading ? <Roundspinner /> :
-            <img src={logoImage} alt="logo-img" className={style.dpStyle} />
+            <img src={logoImage} alt="logo-img" className={`${style.dpStyle} border-[0.5px] border-red-500`} />
           }
         </div>
         :
-        <div className='flex flex-col'>
+        <div className='flex flex-col items-center justify-center'>
           {isUploadActive && dpUrl &&
             <>
               <label>
@@ -123,25 +119,26 @@ export default function ProfilePicture({ userId, height, width, rounded, isUploa
                     <div className='h-20 w-20 flex flex-col justify-center items-center bg-gray-300 rounded-full'
                       onClick={() => setDpChangeOptions(!dpChangeOptions)}>
                       {dploading ? <Roundspinner /> :
-                        <img src={dpUrl} alt='DP' className={style.dpStyle} />
+                        <img src={dpUrl} alt='DP' className={`${style.dpStyle} border-[0.5px] border-red-500`} />
                       }
                     </div>
                   </>
                 )}
               </label>
               {dpChangeOptions &&
-                <div className='ml-[-10px] mb-2 p-2 rounded-lg flex  justify-evenly items-center animate-slide-in duration-150 transition-all duration-300 ease-in'>
-                  <button type='button' className='py-1 px-2 mr-1 bg-white outline-none rounded-lg text-[12px] bg-mainColor hover:shadow-md' onClick={deleteDisplayPicture}>Delete</button>
+                <div className='rounded-lg flex gap-3 my-3 justify-evenly items-center animate-fade-in transition-all duration-300 ease-in'>
+                  <button type='button' className='outline-none rounded-lg text-[12px] hover:shadow-md text-red-600 font-bold' onClick={deleteDisplayPicture}>Delete</button>
 
-                  <label className='flex items-center cursor-pointer py-1 px-2 outline-none rounded-lg text-[12px] mx-1 bg-mainColor hover:shadow-md'>
-                  Change<input type="file"
-                        name='change-dp'
-                        onChange={changeDisplayPicture}
-                        className='w-0 h-0'
-                      />
+                  <label className='flex items-center cursor-pointer outline-none rounded-lg text-[12px] hover:shadow-md text-white font-bold'>
+                    Change
+                    <input type="file"
+                      name='change-dp'
+                      onChange={changeDisplayPicture}
+                      className='w-0 h-0'
+                    />
                   </label>
 
-                  <button type='button' className='py-1 px-2 ml-1 bg-white outline-none rounded-lg text-[12px] bg-mainColor hover:shadow-md' onClick={() => setDpChangeOptions(false)}>Cancel</button>
+                  <button type='button' className='outline-none rounded-lg text-[12px] hover:shadow-md text-blue-500 font-bold' onClick={() => setDpChangeOptions(false)}>Cancel</button>
                 </div>
               }
             </>
@@ -153,9 +150,9 @@ export default function ProfilePicture({ userId, height, width, rounded, isUploa
                     {dploading ? <Roundspinner /> :
                       <>
                         <p className='font-bold text-2xl'>
-                          <AiOutlineCloudUpload />
+                          <AiOutlineCloudUpload color='black' />
                         </p>
-                        <p className='text-sm'>Upload DP</p>
+                        <p className='text-sm text-black'>Upload DP</p>
                       </>
                     }
                   </div>
@@ -168,9 +165,9 @@ export default function ProfilePicture({ userId, height, width, rounded, isUploa
               )}
             </label>
           }{dpUrl && !isUploadActive &&
-              <img src={dpUrl} alt='DP' className={style.dpStyle} />
-          }{!dpUrl && !isUploadActive && 
-            <img src={logoImage} alt="logo-img" className={style.dpStyle} />
+            <img src={dpUrl} alt='DP' className={`${style.dpStyle} border-[0.5px] border-red-500`} />
+          }{!dpUrl && !isUploadActive &&
+            <img src={logoImage} alt="logo-img" className={`${style.dpStyle} border-[0.5px] border-red-500`} />
           }
         </div>
 
